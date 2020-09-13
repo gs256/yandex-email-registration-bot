@@ -1,0 +1,19 @@
+{
+  "name": "mail-reg-electron",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^10.0.0"
+  },
+  "dependencies": {
+    "axios": "^0.20.0",
+    "puppeteer": "^5.2.1"
+  }
+}
