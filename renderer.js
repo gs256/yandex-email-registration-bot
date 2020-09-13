@@ -97,7 +97,7 @@ async function register(page, imgSearchPage, credentials) {
 			(await imgSearchPage.$('.CbirItem.CbirOcr button')).click();
 
 			await Promise.any([
-				// imgSearchPage.waitForSelector('div.CbirOcr-ErrorMessage'),
+				imgSearchPage.waitForSelector('.CbirOcr-Content .CbirOcr-ErrorMessage'),
 				imgSearchPage.waitForSelector('div.CbirOcr-Text')
 			]);
 
