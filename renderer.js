@@ -8,7 +8,14 @@ const { clear } = require('console');
 tasks = [];
 
 (async () => {
-	const browser = await puppeteer.launch({headless: false, defaultViewport: null});
+	const browser = await puppeteer.launch({
+		headless: false, 
+		defaultViewport: null, 
+		args: [
+    		'--no-proxy-server',
+    		"--proxy-server='direct://'",
+    		"--proxy-bypass-list=*",
+	]});
 
 	document.querySelector('button')
 	.addEventListener('click', async () => {
@@ -44,8 +51,8 @@ async function register(page, imgSearchPage, credentials) {
 	await page.type('input#login', credentials.username);
 	
 	// Type password
-	await page.type('input#password', 'KNdjfu3jr42JBfe');
-	await page.type('input#password_confirm', 'KNdjfu3jr42JBfe');
+	await page.type('input#password', credentials.password);
+	await page.type('input#password_confirm', credentials.password);
 
 	// Chose secret question instead of phone
 	(await (await page.$('.toggle-link.link_has-no-phone')).$('span')).click();
@@ -62,19 +69,6 @@ async function register(page, imgSearchPage, credentials) {
 		await page.waitForSelector('button[type="submit"]');
 		await page.waitForSelector('img.captcha__image');
 		const captchaImageSrc = await getCaptchaImageSrc(page);
-		
-		// await imgSearchPage.goto('https://yandex.ru/images/');
-
-		// // Click the search image button
-		// await imgSearchPage.waitForSelector('.input__cbir-button.input__button button');
-		// (await imgSearchPage.$('.input__cbir-button.input__button button')).click();		
-		
-		// // Type the captcha image url
-		// const imageUrlInputSelector = 'span.input.input_type_cbir input.input__control';
-		// await imgSearchPage.waitForSelector(imageUrlInputSelector);
-		// await waitForCbirPanelToShow(imgSearchPage, 10);
-		// await imgSearchPage.type(imageUrlInputSelector, captchaImageSrc);
-		// (await imgSearchPage.$('.cbir-panel__input button[type="submit"]')).click();
 
 		const imageSearchUrl = generateImageSearchUrl(captchaImageSrc);
 		await imgSearchPage.bringToFront();
@@ -135,6 +129,12 @@ async function register(page, imgSearchPage, credentials) {
 
 			if (await passedCaptcha(page)) {
 				await saveCredentialsToFile(credentials);
+				
+				await page.waitForSelector('span.registration__avatar-btn a');
+				await page.focus('span.registration__avatar-btn a');
+				(await page.$('span.registration__avatar-btn a')).click();
+				await sleep(1000);
+
 				isCaptchaSolved = true;
 				// await sleep(1000);
 				await clearCookies(page);
